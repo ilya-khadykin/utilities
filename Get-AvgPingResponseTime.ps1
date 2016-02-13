@@ -10,7 +10,7 @@
 .EXAMPLE
   Get-AvgPingResponseTime -hosts 8.8.8.8, 8.8.4.4 -count 10
 .LINK
-  
+  https://github.com/m-a-ge/utilities
 #>
 
 param(
