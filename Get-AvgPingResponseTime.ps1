@@ -20,8 +20,7 @@ param(
 
 $results = @{}
 
-#$hosts = "192.240.96.164"
-
+"`n"
 foreach ($hostIp in $hosts) {
   "Starting testing $hostIp"
   $pingResults = Test-Connection $hostIp -count $count -ErrorVariable errorCount -ErrorAction SilentlyContinue
@@ -33,9 +32,13 @@ foreach ($hostIp in $hosts) {
   } else {
     $percentOfErros = $errorCount.count/$count*100
     "$percentOfErros% error rate"
-    "$hostIp is excluded from final results due to high error rate"
+    # if the error rate is more than 10% exclude the host from testing
+    if ($percentOfErros -gt 10) {
+      "$hostIp is excluded from testing due to high error rate"
+      "`n"
+      continue
+    }
     "`n"
-    continue
   }
 
   $results.Add($hostIp, $roundedAvgPingTime)
