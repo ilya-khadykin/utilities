@@ -1,10 +1,10 @@
 ﻿<#
 .SYNOPSIS
-  Automation script for running TestNG test suites with Maven which uses .csv file as an imput data
+  Automation script for running TestNG test suites with Maven which uses .csv file as an input data
 .DESCRIPTION
-  The script reads 'TestNG_suites_location.csv' from 'data' directory, parses it, then spawnes an instance of command line interpreter and passes required arguments to it to run TestNG test suites
+  The script reads 'TestNG_suites_location.csv' from 'data' directory, parses it, then spawns an instance of command line interpreter and passes required arguments to it to run TestNG test suites
 .PARAMETER Line
-  Line server against wich tests will be run (passed to Maven as a parametr), 'q1' by default
+  Line server against wich tests will be run (passed to Maven as a parameter), 'q1' by default
 .PARAMETER PathToMavenProjectDirectory
   Absolute path to root directory of a Maven project
 .PARAMETER PathToCsvFile
@@ -74,14 +74,17 @@ function main {
       $name = $line | Select-Object -ExpandProperty 'name'
       
       # generating the full TestNG suite name
-      $full_suite_name = $dir + '/' + $name
+      $full_suite_name = $dir + '--' + $name
 
       # starting an instance of CLI and passing required arguments (based on .csv file)
       Spawn-Process -PathToExecutable ($env:windir + '\System32\cmd.exe') -ArgumentList ('/K cd ' + $dir + ' & echo "mvn verify -DLine=' + $LINE_SERVER + ' -Dsuite.folder=' + $dir + ' -Dintegration.type=' + $name + '" >> ' + $PSScriptRoot + '\' + $name)
 
       # an example of how to run a TestNG suite with Maven
       # starting an instance of CLI and passing required arguments to run TestNG suites using Maven (based on .csv file)
-      #Spawn-Process -PathToExecutable ($env:windir + '\System32\cmd.exe') -ArgumentList ('/K cd ' + $MAVEN_PROJECT_ROOT + ' & mvn verify -DLine=' + $LINE_SERVER + ' -Dsuite.folder=' + $dir + ' -Dintegration.type=' + $name + ' & exit') + -RedirectOutputToFile ($PSScriptRoot + '\' + $full_suite_name + '.log')
+      #Spawn-Process -PathToExecutable ($env:windir + '\System32\cmd.exe') -ArgumentList ('/K cd ' + $MAVEN_PROJECT_ROOT + ' & mvn verify -DLine=' + $LINE_SERVER + ' -Dsuite.folder=' + $dir + ' -Dintegration.type=' + $name + ' & exit') -RedirectOutputToFile ($PSScriptRoot + '\' + $full_suite_name + '.log')
+
+      # wait 1 minute to give a little time for Maven to prepare everything
+      Start-Sleep -s 60
   }
 }
 
