@@ -75,6 +75,8 @@ function main {
       
       # generating the full TestNG suite name
       $full_suite_name = $dir + '--' + $name
+      # replace illegal characters in future file name
+      $full_suite_name = $full_suite_name -replace '/', '--'
 
       # starting an instance of CLI and passing required arguments (based on .csv file)
       Spawn-Process -PathToExecutable ($env:windir + '\System32\cmd.exe') -ArgumentList ('/K cd ' + $dir + ' & echo "mvn verify -DLine=' + $LINE_SERVER + ' -Dsuite.folder=' + $dir + ' -Dintegration.type=' + $name + '" >> ' + $PSScriptRoot + '\' + $name)
